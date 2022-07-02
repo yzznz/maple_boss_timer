@@ -1,32 +1,70 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import "./App.css";
+import BossButton from "./components/BossButton";
 
-const initialize = () => {};
+// Lucid, Will, Guardian_Angel_Slime, Verus_Hilla, Gloom, Guard_Captain_Darknell, Black_Mage
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "lucid": {
+      console.log("lucid");
+      return 1111;
+    }
+    case "will": {
+      console.log("will");
+      return 1800;
+    }
+    case "guardian_angel_slime": {
+      console.log("Guardian_Angel_Slime");
+      return 1800;
+    }
+    case "verus_hilla": {
+      console.log("Verus_Hilla");
+      return 1800;
+    }
+    case "start": {
+      return state - 1;
+    }
+    default:
+      console.log("error");
+      return 0;
+  }
+};
 
 function App() {
-  const sec = useRef(0);
-  const [currentTime, setCurrentTime] = useState(sec.current);
-  const [patternTime, setPatternTime] = useState(0);
-  const [remainingTime, setRemainingTime] = useState(0);
-  const [start, setStart] = useState(false);
+  const sec = useRef(0); //  초기 시간값을 담은 변수
 
-  const interval = useRef(null);
+  const [currentTime, setCurrentTime] = useState(sec.current); //  현재 시간
+  const [patternTime, setPatternTime] = useState(0); // 패턴 시간
+  const [remainingTime, setRemainingTime] = useState(0); //  패턴까지 남은 시간
+  const [start, setStart] = useState(false); //  타이머 시작, 정지
 
-  const pattern = 120;
+  const interval = useRef(null); //  setInterval()
 
-  useEffect(() => {
-    setRemainingTime(currentTime > pattern ? currentTime - patternTime : 0);
-    if (sec.current <= 0) {
-      clearInterval(interval.current);
-    } else if (sec.current === patternTime) {
-      console.log("attack!!");
-      setPatternTime(currentTime > pattern ? patternTime - pattern : 0);
-    }
-  }, [sec.current]);
+  const pattern = 120; //  패턴 주기
 
-  useEffect(() => {
-    setRemainingTime(currentTime > pattern ? currentTime - patternTime : 0);
-  }, [patternTime]);
+  const [state, dispatch] = useReducer(reducer, 0);
+
+  useEffect(
+    () => {
+      setRemainingTime(currentTime > pattern ? currentTime - patternTime : 0);
+      if (sec.current <= 0) {
+        clearInterval(interval.current);
+      } else if (sec.current === patternTime) {
+        console.log("attack!!");
+        setPatternTime(currentTime > pattern ? patternTime - pattern : 0);
+      }
+    },
+    // [sec.current]
+    [currentTime, patternTime]
+  );
+
+  useEffect(
+    () => {
+      setRemainingTime(currentTime > pattern ? currentTime - patternTime : 0);
+    },
+    // [patternTime]
+    [currentTime, patternTime]
+  );
 
   useEffect(() => {
     if (remainingTime === 90) console.log("1분 30초 남았습니다.");
@@ -37,23 +75,46 @@ function App() {
   console.log("App", currentTime, patternTime);
   return (
     <div className="App">
+      <div className="boss_menu">
+        <BossButton name={"루시드"} value={"lucid"} dispatch={dispatch} />
+        <BossButton name={"윌"} value={"will"} dispatch={dispatch} />
+        <BossButton
+          name={"가엔슬"}
+          value={"guardian_angel_slime"}
+          dispatch={dispatch}
+        />
+        <BossButton name={"진힐라"} value={"verus_hilla"} dispatch={dispatch} />
+        <BossButton
+          name={"검은마법사"}
+          value={"black_mage"}
+          dispatch={dispatch}
+        />
+      </div>
       <div className="timer_module">
         <div className="top">
           <h1>
-            현재 시간 : {Math.floor(currentTime / 60)}분 {currentTime % 60}초
+            현재 시간 : {Math.floor(state / 60)}분 {state % 60}초
           </h1>
           <input
             type="button"
             value={!start ? "시작" : "정지"}
             onClick={() => {
+              // if (!start) {
+              //   setPatternTime(
+              //     sec.current > pattern ? sec.current - pattern : 0
+              //   );
+              //   interval.current = setInterval(() => {
+              //     sec.current -= 1;
+              //     setCurrentTime(sec.current);
+              //   }, 1000);
+              //   setStart(!start);
+              // } else {
+              //   clearInterval(interval.current);
+              //   setStart(!start);
+              // }
               if (!start) {
-                sec.current = 3600;
-                setPatternTime(
-                  sec.current > pattern ? sec.current - pattern : 0
-                );
                 interval.current = setInterval(() => {
-                  sec.current -= 1;
-                  setCurrentTime(sec.current);
+                  dispatch({ type: "start" });
                 }, 1000);
                 setStart(!start);
               } else {
@@ -93,6 +154,8 @@ function App() {
             초
           </h1>
         </div>
+        <div className="ultimate">극딜 시작 : </div>
+        <div className="ultimate_remaining">남은 시간 : </div>
       </div>
     </div>
   );
