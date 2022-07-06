@@ -24,3 +24,8 @@
   justify-content: space-around;
   border: none;
 } */
+
+.phase_btn_selector {
+  background-color: black;
+  color: white;
+}
