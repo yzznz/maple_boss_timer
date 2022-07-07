@@ -32,17 +32,14 @@ const VerusHilla = () => {
     phase: "phase1",
   });
   const [currentTime, dispatch] = useReducer(reducer, 1800); // 현재시간
-  const [patternTime, setPatternTime] = useState(
-    currentTime - phaseComponent[phaseSelector.difficulty].init
-  ); // 패턴시간
-  const [remainingTime, setRemainingTime] = useState(currentTime - patternTime); // 남은시간
+  const [patternTime, setPatternTime] = useState(0); // 패턴시간
+  const [remainingTime, setRemainingTime] = useState(0); // 남은시간
   const [buttonState, setButtonState] = useState(true); // 토글스위치
 
-  const [startTime, setStartTime] = useState(0);
+  const [startTime, setStartTime] = useState(1800);
+  let startTime2;
 
-  const [phasetime, setPhaseTime] = useState(
-    phaseComponent[phaseSelector.difficulty][phaseSelector.phase]
-  );
+  const [phaseTime, setPhaseTime] = useState(0);
 
   // useEffect(() => {
   //   setPhaseTime(
@@ -58,21 +55,35 @@ const VerusHilla = () => {
   const interval = useRef(null); // setInterval 경로
 
   useEffect(() => {
-    if (startTime === 0)
-      setPatternTime(
-        currentTime - phaseComponent[phaseSelector.difficulty].init
-      );
-  }, [phaseSelector]); // 시작전, 모드 변경시 패턴시간 변경
+    const PhaseSelectorTime =
+      phaseComponent[phaseSelector.difficulty][
+        startTime === 1800 ? "init" : phaseSelector.phase
+      ];
+
+    setPhaseTime(PhaseSelectorTime);
+
+    setPatternTime(startTime - PhaseSelectorTime);
+  }, [phaseSelector]); // 난이도, 페이즈 변경마다 호출
+
+  useEffect(() => {
+    if (remainingTime < 0) {
+      setStartTime(startTime2);
+      console.log(startTime2);
+    }
+  }, [remainingTime]); // 남은시간 -될 시 패턴시간 재정의
 
   useEffect(() => {
     setRemainingTime(currentTime - patternTime);
-    if (startTime === 1800)
-      setPatternTime(
-        currentTime - phaseComponent[phaseSelector.difficulty].init
-      );
+    console.log("currunttime");
+
+    if (currentTime === 1800) setStartTime(currentTime);
 
     if (currentTime === patternTime) {
-      setPatternTime(currentTime - 152);
+      setPatternTime(currentTime - phaseTime);
+      startTime2 = startTime;
+      setStartTime(currentTime);
+
+      console.log(phaseTime);
       console.log("낫 베기");
     }
 
@@ -87,20 +98,20 @@ const VerusHilla = () => {
           type="button"
           value={buttonState ? "시작" : "리셋"}
           onClick={() => {
+            dispatch({ type: 1800 });
+            setButtonState(!buttonState);
+
             if (buttonState) {
-              setButtonState(!buttonState);
-              setStartTime(currentTime);
+              setPhaseSelector({
+                difficulty: phaseSelector.difficulty,
+                phase: "phase1",
+              });
 
               interval.current = setInterval(() => {
                 dispatch({ type: "start" });
-              }, 100);
+              }, 10);
             } else if (!buttonState) {
-              setButtonState(!buttonState);
-
               clearInterval(interval.current);
-
-              dispatch({ type: 1800 });
-              setRemainingTime(currentTime - patternTime);
             }
           }}
         />
@@ -118,7 +129,7 @@ const VerusHilla = () => {
             difficulty: e.target.value,
             phase: phaseSelector.phase,
           });
-          console.log(phaseSelector, phasetime);
+          console.log(phaseSelector);
         }}
       >
         <option value="normal">normal</option>
@@ -136,7 +147,6 @@ const VerusHilla = () => {
               difficulty: phaseSelector.difficulty,
               phase: "phase1",
             });
-            console.log("1페이즈");
           }}
         >
           1페이즈
@@ -152,7 +162,6 @@ const VerusHilla = () => {
               difficulty: phaseSelector.difficulty,
               phase: "phase2",
             });
-            console.log("2페이즈");
           }}
         >
           2페이즈
@@ -168,7 +177,6 @@ const VerusHilla = () => {
               difficulty: phaseSelector.difficulty,
               phase: "phase3",
             });
-            console.log("3페이즈");
           }}
         >
           3페이즈
