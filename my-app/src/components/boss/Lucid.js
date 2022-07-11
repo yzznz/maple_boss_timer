@@ -31,6 +31,8 @@ const Lucid = () => {
 
   const interval = useRef(null); // setInterval 경로
 
+  const CallVoice = [90, 60, 30, 20, 10, 5, 4, 3, 2, 1];
+
   useEffect(() => {
     if (currentTime >= patternTime) setRemainingTime(currentTime - patternTime); // 남은시간 계산
 
@@ -39,30 +41,50 @@ const Lucid = () => {
 
     if (currentTime > boomDate && currentTime === boomTime) {
       console.log("Boom!!");
-      Speech("뿌우우움~");
+      Speech("현 시간부로 폭탄에 대비하세요.");
     }
 
     if (currentTime > patternDate && currentTime === patternTime) {
       setPatternTime(currentTime - patternDate);
       console.log("Attack!!");
-      Speech("발판 뿌우움~");
     }
 
     if (currentTime === 0) clearInterval(interval.current); // 현재시간이 0이 되면 setInterval 중지
-  }, [currentTime]);
+  }, [currentTime, patternTime]);
+
+  useEffect(() => {
+    for (let i = 0; i < CallVoice.length; i++) {
+      if (remainingTime === CallVoice[i]) {
+        if (CallVoice[i] > 60) {
+          Speech(
+            `${Math.floor(CallVoice[i] / 60)}분 ${
+              CallVoice[i] % 60
+            }초 남았습니다.`
+          );
+        } else if (CallVoice[i] === 60) {
+          Speech("1분 남았습니다.");
+        } else if (CallVoice[i] >= 10) {
+          Speech(`${CallVoice[i]}초 남았습니다.`);
+        } else if (CallVoice[i] > 0) {
+          Speech(`${CallVoice[i] === 2 ? "이2" : CallVoice[i]}`);
+        }
+      }
+    }
+  }, [remainingTime]);
 
   return (
     <div className="lucid">
+      <div>가운데 발판 깨진 시간 입력</div>
       <div className="">
         <input
           className="input_box"
           type="text"
+          placeholder="예)17분35초 = 1735"
           minLength="4"
           maxLength="4"
           value={inputTime}
           onChange={(e) => {
             setInputTime(e.target.value);
-            console.log(inputTime);
           }}
         />
         <input
@@ -72,7 +94,7 @@ const Lucid = () => {
             if (buttonState && inputTime.length === 4) {
               setButtonState(!buttonState);
 
-              Speech("시자악 합니다");
+              Speech("시작 합니다");
 
               const minute = parseInt(inputTime[0] + inputTime[1]);
               const second = parseInt(inputTime[2] + inputTime[3]);
@@ -84,9 +106,7 @@ const Lucid = () => {
 
               interval.current = setInterval(() => {
                 dispatch({ type: "start" });
-              }, 10);
-
-              console.log(exchange_time);
+              }, 1000);
             } else if (!buttonState) {
               setButtonState(!buttonState);
 
@@ -105,7 +125,21 @@ const Lucid = () => {
         현재시간 : {Math.floor(currentTime / 60)}분 {currentTime % 60}초
       </div>
       <div className="">
-        패턴시간 : {Math.floor(patternTime / 60)}분 {patternTime % 60}초
+        발판시간 : {Math.floor(patternTime / 60)}분 {patternTime % 60}초{" "}
+        <input
+          type="button"
+          value="▼"
+          onClick={() => {
+            if (patternTime > 0) setPatternTime(patternTime - 1);
+          }}
+        />{" "}
+        <input
+          type="button"
+          value="▲"
+          onClick={() => {
+            setPatternTime(patternTime + 1);
+          }}
+        />
       </div>
       <div className="">
         남은시간 : {Math.floor(remainingTime / 60)}분 {remainingTime % 60}초
@@ -132,8 +166,8 @@ const Lucid = () => {
       </div>
       <br />
       <div>
-        발판주기 : {patternDate}초 <br />
-        폭탄주기 : {boomDate}초
+        발판 주기 : {patternDate}초 <br />
+        폭탄 쿨타임 : {boomDate}초
       </div>
     </div>
   );

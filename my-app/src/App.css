@@ -24,6 +24,18 @@
   justify-content: space-around;
   border: none;
 } */
+body {
+  background-color: #eeeeee;
+}
+
+.app {
+  background-color: #ffffff;
+  color: #000000;
+}
+.darkmode {
+  background-color: #282828;
+  color: #cccccc;
+}
 
 .phase_btn_selector {
   background-color: black;

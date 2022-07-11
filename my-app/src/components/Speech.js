@@ -18,7 +18,7 @@ const Speech = (txt) => {
   var lang = "ko-KR";
   var utterThis = new SpeechSynthesisUtterance(txt);
   utterThis.onend = function (event) {
-    console.log("end");
+    // console.log("end");
   };
   utterThis.onerror = function (event) {
     console.log("error", event);
