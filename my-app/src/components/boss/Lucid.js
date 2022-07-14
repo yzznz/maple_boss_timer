@@ -34,6 +34,11 @@ const Lucid = () => {
   const CallVoice = [90, 60, 30, 20, 10, 5, 4, 3, 2, 1];
 
   useEffect(() => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = "보스타이머 - 루시드";
+  }, []);
+
+  useEffect(() => {
     if (currentTime >= patternTime) setRemainingTime(currentTime - patternTime); // 남은시간 계산
 
     if (boomTime > 0 && boomRemaining > 0)

@@ -24,17 +24,46 @@
   justify-content: space-around;
   border: none;
 } */
+
+@media (min-width: 650px) {
+  .app {
+    width: 640px;
+  }
+}
+
+@media (max-width: 650px) {
+  .app {
+    width: 90vw;
+  }
+}
+
 body {
   background-color: #eeeeee;
 }
 
 .app {
   background-color: #ffffff;
+  margin: 10px auto;
+  padding: 15px;
   color: #000000;
 }
 .darkmode {
   background-color: #282828;
   color: #cccccc;
+}
+
+.menu input {
+  margin: 4px;
+}
+
+a:link,
+a:visited {
+  float: right;
+  text-decoration: none;
+  color: black;
+  background-color: #ffcc00;
+  padding: 5px;
+  font-weight: bold;
 }
 
 .phase_btn_selector {

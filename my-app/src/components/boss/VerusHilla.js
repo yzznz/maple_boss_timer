@@ -1,4 +1,5 @@
 import { useState, useReducer, useRef, useEffect } from "react";
+import Speech from "../Speech";
 
 const reducer = (state, action) => {
   if (typeof action.type === "number") {
@@ -10,7 +11,7 @@ const reducer = (state, action) => {
 };
 
 // 패턴시간
-const phaseComponent = {
+const Timetable = {
   normal: {
     init: 196,
     phase1: 182,
@@ -21,7 +22,7 @@ const phaseComponent = {
     init: 166,
     phase1: 152,
     phase2: 126,
-    phase3: 100,
+    phase3: 99,
   },
 };
 
@@ -32,55 +33,74 @@ const VerusHilla = () => {
   });
   const [currentTime, dispatch] = useReducer(reducer, 1800); // 현재시간
   const [patternTime, setPatternTime] = useState(0); // 패턴시간
-  const [remainingTime, setRemainingTime] = useState(0); // 남은시간
-  const [buttonState, setButtonState] = useState(true); // 토글스위치
-  const [excessTime, setExcessTime] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(0); // 남은시간
+  const [startStopBtn, setStartStopBtn] = useState(true); // 시작, 정지 스위치
 
-  const [startTime, setStartTime] = useState(1800);
-  const prev_startTime = useRef();
+  const [patternRefTime, setPatternRefTime] = useState(1800); // 패턴 기준 시간
+  const [prevRefTime, setPrevRefTime] = useState(1800); // 이전 기준 시간
 
-  const [phaseTime, setPhaseTime] = useState(0);
+  const [phaseCycle, setPhaseCycle] = useState(0); // 패턴 주기 저장
 
-  const [test, setTest] = useState(true);
+  // const [test, setTest] = useState(true); // 정지 재시작 테스트 버튼
 
   // 현재 시간에서 패턴시간을 빼지 말고, 낫 베기 시간 기준으로 초기화. 낫 베기 시간 저장한 뒤 참고.
 
   const interval = useRef(null); // setInterval 경로
+  const CallVoice = [90, 60, 30, 20, 10, 5, 4, 3, 2, 1];
 
   useEffect(() => {
-    setRemainingTime(currentTime - patternTime);
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = "보스타이머 - 진힐라";
+  }, []);
+
+  useEffect(() => {
+    for (let i = 0; i < CallVoice.length; i++) {
+      if (timeRemaining === CallVoice[i]) {
+        if (CallVoice[i] > 60) {
+          Speech(
+            `${Math.floor(CallVoice[i] / 60)}분 ${
+              CallVoice[i] % 60
+            }초 남았습니다.`
+          );
+        } else if (CallVoice[i] === 60) {
+          Speech("1분 남았습니다.");
+        } else if (CallVoice[i] >= 10) {
+          Speech(`${CallVoice[i]}초 남았습니다.`);
+        } else if (CallVoice[i] > 0) {
+          Speech(`${CallVoice[i] === 2 ? "이2" : CallVoice[i]}`);
+        }
+      }
+    }
+  }, [timeRemaining]);
+
+  useEffect(() => {
+    setTimeRemaining(currentTime - patternTime);
 
     if (currentTime <= patternTime) {
-      setPatternTime(startTime - phaseTime);
-      setStartTime(currentTime);
+      setPatternTime(patternRefTime - phaseCycle);
+      setPrevRefTime(patternRefTime);
+      setPatternRefTime(currentTime);
 
-      console.log(phaseTime);
       console.log("낫 베기");
     }
 
     if (currentTime === 0) clearInterval(interval.current); // 현재시간이 0이 되면 setInterval 중지
-  }, [currentTime, startTime]);
+  }, [currentTime, patternTime]);
 
   useEffect(() => {
-    if (remainingTime < 0) {
-      prev_startTime.current = startTime;
-    }
-  }, [remainingTime]); // 남은시간 -될 시 패턴시간 재정의
-
-  useEffect(() => {
-    const PhaseSelectorTime =
-      phaseComponent[phaseSelector.difficulty][
-        startTime === 1800 ? "init" : phaseSelector.phase
+    const Point =
+      Timetable[phaseSelector.difficulty][
+        patternRefTime === 1800 ? "init" : phaseSelector.phase
       ];
 
-    setPhaseTime(PhaseSelectorTime);
+    setPhaseCycle(Point);
 
-    setPatternTime(startTime - PhaseSelectorTime);
-  }, [phaseSelector, startTime]); // 난이도, 페이즈 변경마다 호출
-
-  useEffect(() => {
-    setRemainingTime(currentTime - patternTime);
-  }, [patternTime]); // phaseSelector 호출 시, 남은시간 재계산
+    if (prevRefTime - Point < currentTime) {
+      setPatternTime(prevRefTime - Point);
+    } else {
+      setPatternTime(patternRefTime - Point);
+    }
+  }, [phaseSelector, patternRefTime]); // 난이도, 페이즈 변경마다 호출
 
   return (
     <div>
@@ -88,31 +108,33 @@ const VerusHilla = () => {
         현재시간 : {Math.floor(currentTime / 60)}분 {currentTime % 60}초{" "}
         <input
           type="button"
-          value={buttonState ? "시작" : "리셋"}
+          value={startStopBtn ? "시작" : "리셋"}
           onClick={() => {
             dispatch({ type: 1800 });
-            setStartTime(1800);
-            setButtonState(!buttonState);
+            setPatternRefTime(1800);
+            setPrevRefTime(1800);
+            setPhaseSelector({
+              difficulty: phaseSelector.difficulty,
+              phase: "phase1",
+            });
+            setStartStopBtn(!startStopBtn);
 
-            if (buttonState) {
-              setPhaseSelector({
-                difficulty: phaseSelector.difficulty,
-                phase: "phase1",
-              });
+            if (startStopBtn) {
+              Speech("시작 합니다");
 
               interval.current = setInterval(() => {
                 dispatch({ type: "start" });
-              }, 10);
-            } else if (!buttonState) {
+              }, 1000);
+            } else if (!startStopBtn) {
               clearInterval(interval.current);
             }
           }}
         />
-        <input
+        {/* <input
           type="button"
           value="정지"
           onClick={() => {
-            if (!buttonState) {
+            if (!startStopBtn) {
               setTest(!test);
               if (test) {
                 clearInterval(interval.current);
@@ -123,13 +145,27 @@ const VerusHilla = () => {
               }
             }
           }}
+        /> */}
+      </div>
+      <div className="">
+        패턴시간 : {Math.floor(patternTime / 60)}분 {patternTime % 60}초{" "}
+        <input
+          type="button"
+          value="▼"
+          onClick={() => {
+            if (patternTime > 0) setPatternTime(patternTime - 1);
+          }}
+        />{" "}
+        <input
+          type="button"
+          value="▲"
+          onClick={() => {
+            setPatternTime(patternTime + 1);
+          }}
         />
       </div>
       <div className="">
-        패턴시간 : {Math.floor(patternTime / 60)}분 {patternTime % 60}초
-      </div>
-      <div className="">
-        남은시간 : {Math.floor(remainingTime / 60)}분 {remainingTime % 60}초
+        남은시간 : {Math.floor(timeRemaining / 60)}분 {timeRemaining % 60}초
       </div>
       <select
         defaultValue="hard"
