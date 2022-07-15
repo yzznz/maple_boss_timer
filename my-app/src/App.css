@@ -52,13 +52,20 @@ body {
   color: #cccccc;
 }
 
+.menu {
+  margin-bottom: 20px;
+}
+
 .menu input {
   margin: 4px;
 }
 
+.console {
+  float: right;
+}
+
 a:link,
 a:visited {
-  float: right;
   text-decoration: none;
   color: black;
   background-color: #ffcc00;
@@ -69,4 +76,11 @@ a:visited {
 .phase_btn_selector {
   background-color: black;
   color: white;
+}
+
+/* Update */
+
+.update header {
+  font-weight: bold;
+  margin-bottom: 10px;
 }

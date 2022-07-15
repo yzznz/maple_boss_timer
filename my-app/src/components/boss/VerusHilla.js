@@ -22,7 +22,7 @@ const Timetable = {
     init: 166,
     phase1: 152,
     phase2: 126,
-    phase3: 99,
+    phase3: 100,
   },
 };
 
@@ -46,7 +46,7 @@ const VerusHilla = () => {
   // 현재 시간에서 패턴시간을 빼지 말고, 낫 베기 시간 기준으로 초기화. 낫 베기 시간 저장한 뒤 참고.
 
   const interval = useRef(null); // setInterval 경로
-  const CallVoice = [90, 60, 30, 20, 10, 5, 4, 3, 2, 1];
+  const CallVoice = [120, 90, 60, 50, 40, 30, 20, 10, 5, 4, 3, 2, 1];
 
   useEffect(() => {
     const titleElement = document.getElementsByTagName("title")[0];
@@ -56,14 +56,14 @@ const VerusHilla = () => {
   useEffect(() => {
     for (let i = 0; i < CallVoice.length; i++) {
       if (timeRemaining === CallVoice[i]) {
-        if (CallVoice[i] > 60) {
+        if (CallVoice[i] % 60 === 0) {
+          Speech(`${CallVoice[i] / 60}분 남았습니다.`);
+        } else if (CallVoice[i] > 60) {
           Speech(
             `${Math.floor(CallVoice[i] / 60)}분 ${
               CallVoice[i] % 60
             }초 남았습니다.`
           );
-        } else if (CallVoice[i] === 60) {
-          Speech("1분 남았습니다.");
         } else if (CallVoice[i] >= 10) {
           Speech(`${CallVoice[i]}초 남았습니다.`);
         } else if (CallVoice[i] > 0) {
@@ -76,12 +76,17 @@ const VerusHilla = () => {
   useEffect(() => {
     setTimeRemaining(currentTime - patternTime);
 
-    if (currentTime <= patternTime) {
-      setPatternTime(patternRefTime - phaseCycle);
-      setPrevRefTime(patternRefTime);
+    if (currentTime <= patternTime && patternTime !== 0) {
+      let refTime = patternRefTime;
+      if (
+        patternTime ===
+        prevRefTime - Timetable[phaseSelector.difficulty][phaseSelector.phase]
+      ) {
+        refTime = prevRefTime;
+      }
+      setPatternTime(refTime - phaseCycle);
+      setPrevRefTime(refTime);
       setPatternRefTime(currentTime);
-
-      console.log("낫 베기");
     }
 
     if (currentTime === 0) clearInterval(interval.current); // 현재시간이 0이 되면 setInterval 중지
@@ -96,9 +101,9 @@ const VerusHilla = () => {
     setPhaseCycle(Point);
 
     if (prevRefTime - Point < currentTime) {
-      setPatternTime(prevRefTime - Point);
+      setPatternTime(prevRefTime - Point > 0 ? prevRefTime - Point : 0);
     } else {
-      setPatternTime(patternRefTime - Point);
+      setPatternTime(patternRefTime - Point > 0 ? patternRefTime - Point : 0);
     }
   }, [phaseSelector, patternRefTime]); // 난이도, 페이즈 변경마다 호출
 
@@ -174,7 +179,6 @@ const VerusHilla = () => {
             difficulty: e.target.value,
             phase: phaseSelector.phase,
           });
-          console.log(phaseSelector);
         }}
       >
         <option value="normal">normal</option>
