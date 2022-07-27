@@ -22,7 +22,7 @@ const Timetable = {
     init: 166,
     phase1: 152,
     phase2: 126,
-    phase3: 100,
+    phase3: 101,
   },
 };
 
