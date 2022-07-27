@@ -82,5 +82,23 @@ a:visited {
 
 .update header {
   font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.notice {
+  display: flex;
+  flex-direction: row;
   margin-bottom: 10px;
+  border-bottom: 1px outset gray;
+  padding-bottom: 5px;
+}
+.date {
+  flex: 1;
+  font-weight: bold;
+}
+
+.desc {
+  flex: 5;
+  text-align: left;
+  white-space: pre-wrap;
 }

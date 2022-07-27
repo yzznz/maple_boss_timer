@@ -6,8 +6,11 @@ import Speech from "../Speech";
 const reducer = (state, action) => {
   if (typeof action.type === "number") {
     return action.type;
-  }
-  if (action.type === "start") {
+  } else if (action.type === "start") {
+    return state - 1;
+  } else if (action.type === "up") {
+    return state + 1;
+  } else if (action.type === "down") {
     return state - 1;
   }
 };
@@ -127,7 +130,21 @@ const Lucid = () => {
         />
       </div>
       <div className="">
-        현재시간 : {Math.floor(currentTime / 60)}분 {currentTime % 60}초
+        현재시간 : {Math.floor(currentTime / 60)}분 {currentTime % 60}초{" "}
+        <input
+          type="button"
+          value="▼"
+          onClick={() => {
+            if (patternTime > 0) dispatch({ type: "down" });
+          }}
+        />{" "}
+        <input
+          type="button"
+          value="▲"
+          onClick={() => {
+            dispatch({ type: "up" });
+          }}
+        />
       </div>
       <div className="">
         발판시간 : {Math.floor(patternTime / 60)}분 {patternTime % 60}초{" "}
