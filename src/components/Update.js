@@ -20,6 +20,10 @@ const Update = () => {
       <article>
         <Notice
           date="2022-07-28"
+          desc="노말 진힐라 업데이트로 인한 기능 및 ui 변경"
+        />
+        <Notice
+          date="2022-07-28"
           desc={`루시드, 진힐라 현재시간 조정버튼 추가.\n오류문의 환영합니다.`}
         />
 

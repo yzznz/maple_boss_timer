@@ -19,7 +19,6 @@ const Timetable = {
     init: 196,
     phase1: 182,
     phase2: 152,
-    phase3: 121,
   },
   hard: {
     init: 166,
@@ -232,26 +231,42 @@ const VerusHilla = () => {
         >
           2페이즈
         </button>
-        <button
-          className={
-            phaseSelector.phase === "phase3"
-              ? "phase_btn_selector"
-              : "phase_btn_3"
-          }
-          onClick={() => {
-            setPhaseSelector({
-              difficulty: phaseSelector.difficulty,
-              phase: "phase3",
-            });
-          }}
-        >
-          3페이즈
-        </button>
+        {phaseSelector.difficulty === "normal" ? (
+          ""
+        ) : (
+          <button
+            className={
+              phaseSelector.phase === "phase3"
+                ? "phase_btn_selector"
+                : "phase_btn_3"
+            }
+            onClick={() => {
+              setPhaseSelector({
+                difficulty: phaseSelector.difficulty,
+                phase: "phase3",
+              });
+            }}
+          >
+            3페이즈
+          </button>
+        )}
       </div>
       <div className="">
         <h2>낫 주기</h2>
-        <h4>2페이즈 : 체력 61% 미만</h4>
-        <h4>3페이즈 : 체력 31% 미만</h4>
+        <h4>
+          {phaseSelector.difficulty === "normal" ? (
+            <>2페이즈 : 체력 51% 미만</>
+          ) : (
+            <>2페이즈 : 체력 61% 미만</>
+          )}
+        </h4>
+        <h4>
+          {phaseSelector.difficulty === "normal" ? (
+            ""
+          ) : (
+            <>3페이즈 : 체력 31% 미만</>
+          )}
+        </h4>
       </div>
     </div>
   );
