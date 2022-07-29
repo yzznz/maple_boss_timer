@@ -1,55 +1,60 @@
-/* .boss_menu {
-  text-align: center;
-  margin: 30px;
-}
-.boss_menu input {
-  margin: 15px;
-}
+@media (min-width: 1278px) {
+  body {
+    width: 1278px;
+    height: 720px;
+  }
+  .background {
+    display: flex;
+  }
+  .leftbar {
+    flex: 1;
+  }
 
-.timer_module {
-  width: 600px;
-  margin: auto;
-  text-align: center;
-  border: 1px solid black;
-}
-
-.top {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px;
-}
-
-.middle {
-  display: flex;
-  justify-content: space-around;
-  border: none;
-} */
-
-@media (min-width: 650px) {
   .app {
-    width: 640px;
+    flex: 2;
+  }
+  .rightbar {
+    flex: 1;
   }
 }
+@media (min-width: 550px) and (max-width: 1278px) {
+  .background {
+    width: 100vw;
+    display: flex;
+  }
 
-@media (max-width: 650px) {
+  .leftbar {
+    flex: 1;
+  }
+
   .app {
-    width: 90vw;
+    flex: 2;
+  }
+  .rightbar {
+    flex: 1;
   }
 }
 
 body {
+  margin: auto;
   background-color: #eeeeee;
+  overflow-x: hidden;
 }
 
-.app {
-  background-color: #ffffff;
-  margin: 10px auto;
-  padding: 15px;
-  color: #000000;
+/* App */
+
+.background {
+  height: 90vh;
+  align-items: flex-start;
 }
-.darkmode {
-  background-color: #282828;
-  color: #cccccc;
+.background > div {
+  margin: 10px;
+  background-color: #ffffff;
+  padding: 15px;
+}
+
+.rightbar {
+  background-clip: content-box; /*패딩 색 x*/
 }
 
 .menu {
@@ -101,4 +106,26 @@ a:visited {
   flex: 5;
   text-align: left;
   white-space: pre-wrap;
+}
+
+/* DopingCheckList */
+
+.dopingchecklist > div {
+  border: 1px solid black;
+  margin-top: 15px;
+}
+.title {
+  font-weight: bold;
+  position: relative;
+  margin-left: 5px;
+  top: -11px;
+  background-color: white;
+}
+.checkbox {
+  margin-bottom: 5px;
+  background-color: #eeeeee;
+}
+
+input {
+  cursor: pointer;
 }

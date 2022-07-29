@@ -42,6 +42,10 @@ const Lucid = () => {
   }, []);
 
   useEffect(() => {
+    if (inputTime.length === 4) document.getElementById("start").focus();
+  }, [inputTime]); // 커서이동
+
+  useEffect(() => {
     if (currentTime >= patternTime) setRemainingTime(currentTime - patternTime); // 남은시간 계산
 
     if (boomTime > 0 && boomRemaining > 0)
@@ -96,6 +100,7 @@ const Lucid = () => {
           }}
         />
         <input
+          id="start"
           type="button"
           value={buttonState ? "시작" : "리셋"}
           onClick={() => {

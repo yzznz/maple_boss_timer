@@ -19,6 +19,10 @@ const Update = () => {
       <header>★업데이트 내역</header>
       <article>
         <Notice
+          date="2022-07-29"
+          desc={`도핑 checkList추가.\n루시드 시간입력시 자동커서이동.\n디자인 업데이트`}
+        />
+        <Notice
           date="2022-07-28"
           desc="노말 진힐라 업데이트로 인한 기능 및 ui 변경"
         />
