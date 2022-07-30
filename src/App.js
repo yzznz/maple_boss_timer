@@ -4,12 +4,13 @@ import BlackMage from "./components/boss/BlackMage";
 import Lucid from "./components/boss/Lucid";
 import VerusHilla from "./components/boss/VerusHilla";
 import Update from "./components/Update";
-
 import DopingCheckList from "./components/DopingCheckList";
 
 import work from "./images/work.jpg";
+import { getAnalytics } from "firebase/analytics";
+import { app } from "./firebase";
 
-// Lucid, Will, Guardian_Angel_Slime, Verus_Hilla, Gloom, Guard_Captain_Darknell, Black_Mage
+const analytics = getAnalytics(app);
 
 function App() {
   const [bossTimer, setBossTimer] = useState();
