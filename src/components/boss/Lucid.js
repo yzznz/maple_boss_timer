@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import Speech from "../Speech";
+import { getAnalytics, logEvent } from "firebase/analytics";
 // useEffect로 state 관찰 후 패턴, 남은시간 변경
 // 패턴, 남은시간 상태관리 해야할지.
 
@@ -39,6 +40,10 @@ const Lucid = () => {
   useEffect(() => {
     const titleElement = document.getElementsByTagName("title")[0];
     titleElement.innerHTML = "보스타이머 - 루시드";
+    logEvent(getAnalytics(), "screen_view", {
+      firebase_screen: titleElement.innerHTML,
+      firebase_screen_class: "Lucid",
+    });
   }, []);
 
   useEffect(() => {
@@ -112,6 +117,11 @@ const Lucid = () => {
               const minute = parseInt(inputTime[0] + inputTime[1]);
               const second = parseInt(inputTime[2] + inputTime[3]);
 
+              logEvent(getAnalytics(), "루시드", {
+                start_btn: buttonState,
+                start_time: minute + "분 " + second + "초",
+              });
+
               const exchange_time = minute * 60 + second;
 
               dispatch({ type: exchange_time });
@@ -122,6 +132,9 @@ const Lucid = () => {
               }, 1000);
             } else if (!buttonState) {
               setButtonState(!buttonState);
+              logEvent(getAnalytics(), "루시드", {
+                start_btn: buttonState,
+              });
 
               clearInterval(interval.current);
 
@@ -181,6 +194,9 @@ const Lucid = () => {
             if (!buttonState && currentTime >= boomDate) {
               setBoomTime(currentTime - boomDate);
               setBoomRemaining(boomDate);
+              logEvent(getAnalytics(), "루시드", {
+                boom_btn: currentTime,
+              });
             }
           }}
         />

@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import CheckBox from "./CheckBox";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 const DopingCheckList = () => {
   const CheckBeforeDopingArr = [
@@ -35,6 +37,10 @@ const DopingCheckList = () => {
     "스피릿 블레이드 (구 분노, 공 +30)",
     "컴뱃 오더스(4차 스킬 +2)",
   ];
+
+  useEffect(() => {
+    logEvent(getAnalytics(), "도핑체크리스트");
+  }, []);
   return (
     <div className="dopingchecklist">
       <div className="checkbeforedoping">

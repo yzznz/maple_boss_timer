@@ -1,5 +1,6 @@
 import { useState, useReducer, useRef, useEffect } from "react";
 import Speech from "../Speech";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 const reducer = (state, action) => {
   if (typeof action.type === "number") {
@@ -24,7 +25,7 @@ const Timetable = {
     init: 166,
     phase1: 152,
     phase2: 126,
-    phase3: 101,
+    phase3: 102,
   },
 };
 
@@ -52,7 +53,11 @@ const VerusHilla = () => {
 
   useEffect(() => {
     const titleElement = document.getElementsByTagName("title")[0];
-    titleElement.innerHTML = "보스타이머 - 진힐라";
+    titleElement.innerHTML = "보스타이머 - 진 힐라";
+    logEvent(getAnalytics(), "screen_view", {
+      firebase_screen: titleElement.innerHTML,
+      firebase_screen_class: "VerusHilla",
+    });
   }, []);
 
   useEffect(() => {
@@ -109,6 +114,13 @@ const VerusHilla = () => {
     }
   }, [phaseSelector, patternRefTime]); // 난이도, 페이즈 변경마다 호출
 
+  useEffect(() => {
+    if (startStopBtn) {
+      logEvent(getAnalytics(), "진 힐라", {
+        phase_btn: phaseSelector.difficulty + " " + phaseSelector.phase,
+      });
+    }
+  }, [phaseSelector]);
   return (
     <div>
       <div className="">
@@ -118,6 +130,14 @@ const VerusHilla = () => {
           value="▼"
           onClick={() => {
             if (patternTime > 0) dispatch({ type: "down" });
+            logEvent(getAnalytics(), "진 힐라", {
+              setCurrentTime:
+                Math.floor(currentTime / 60) +
+                "분 " +
+                (currentTime % 60) +
+                "초" +
+                " DOWN",
+            });
           }}
         />{" "}
         <input
@@ -125,6 +145,14 @@ const VerusHilla = () => {
           value="▲"
           onClick={() => {
             dispatch({ type: "up" });
+            logEvent(getAnalytics(), "진 힐라", {
+              setCurrentTime:
+                Math.floor(currentTime / 60) +
+                "분 " +
+                (currentTime % 60) +
+                "초" +
+                " UP",
+            });
           }}
         />{" "}
         <input
@@ -139,6 +167,9 @@ const VerusHilla = () => {
               phase: "phase1",
             });
             setStartStopBtn(!startStopBtn);
+            logEvent(getAnalytics(), "진 힐라", {
+              start_btn: startStopBtn,
+            });
 
             if (startStopBtn) {
               Speech("시작 합니다");
@@ -175,6 +206,18 @@ const VerusHilla = () => {
           value="▼"
           onClick={() => {
             if (patternTime > 0) setPatternTime(patternTime - 1);
+            logEvent(getAnalytics(), "진 힐라", {
+              setPatternTime:
+                phaseSelector.difficulty +
+                " " +
+                phaseSelector.phase +
+                " " +
+                Math.floor(patternTime / 60) +
+                "분" +
+                (patternTime % 60) +
+                "초" +
+                " DOWN",
+            });
           }}
         />{" "}
         <input
@@ -182,6 +225,18 @@ const VerusHilla = () => {
           value="▲"
           onClick={() => {
             setPatternTime(patternTime + 1);
+            logEvent(getAnalytics(), "진 힐라", {
+              setPatternTime:
+                phaseSelector.difficulty +
+                " " +
+                phaseSelector.phase +
+                " " +
+                Math.floor(patternTime / 60) +
+                "분" +
+                (patternTime % 60) +
+                "초" +
+                " UP",
+            });
           }}
         />
       </div>

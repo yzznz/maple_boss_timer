@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import BlackMage from "./components/boss/BlackMage";
 import Lucid from "./components/boss/Lucid";
@@ -7,12 +7,18 @@ import Update from "./components/Update";
 import DopingCheckList from "./components/DopingCheckList";
 
 import work from "./images/work.jpg";
-import { getAnalytics } from "firebase/analytics";
-import { app } from "./firebase";
 
-const analytics = getAnalytics(app);
+import { getAnalytics, logEvent } from "firebase/analytics";
+import { app } from "./firebase.js";
 
 function App() {
+  useEffect(() => {
+    getAnalytics(app);
+    logEvent(getAnalytics(), "screen_view", {
+      firebase_screen: "보스타이머",
+      firebase_screen_class: "App",
+    });
+  }, []);
   const [bossTimer, setBossTimer] = useState();
   const [rightBox, setRightBox] = useState();
   const ImgArray = [
@@ -38,9 +44,20 @@ function App() {
           type="button"
           value="도핑 체크리스트"
           onClick={() => {
-            setRightBox(
-              rightBox === undefined ? <DopingCheckList /> : undefined
-            );
+            // setRightBox(
+            //   rightBox === undefined ? <DopingCheckList /> : undefined
+            // );
+            if (rightBox === undefined) {
+              setRightBox(<DopingCheckList />);
+              logEvent(getAnalytics(), "도핑체크리스트", {
+                click: "open",
+              });
+            } else {
+              setRightBox(undefined);
+              logEvent(getAnalytics(), "도핑체크리스트", {
+                click: "close",
+              });
+            }
           }}
         />
         <div>{rightBox}</div>

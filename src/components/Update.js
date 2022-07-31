@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 const Notice = ({ date, desc }) => {
   return (
@@ -13,11 +14,19 @@ const Update = () => {
   useEffect(() => {
     const titleElement = document.getElementsByTagName("title")[0];
     titleElement.innerHTML = "보스타이머 - 업데이트 내역";
+    logEvent(getAnalytics(), "screen_view", {
+      firebase_screen: titleElement.innerHTML,
+      firebase_screen_class: "Update",
+    });
   }, []);
   return (
     <div className="update">
       <header>★업데이트 내역</header>
       <article>
+        <Notice
+          date="2022-07-31"
+          desc="진힐라 하드모드 3페이즈 패턴시간 변경 (101초 -> 102초)"
+        />
         <Notice
           date="2022-07-29"
           desc={`도핑 checkList추가.\n루시드 시간입력시 자동커서이동.\n디자인 업데이트`}

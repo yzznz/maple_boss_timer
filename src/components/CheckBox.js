@@ -1,3 +1,5 @@
+import { getAnalytics, logEvent } from "firebase/analytics";
+
 const CheckBox = ({ value }) => {
   return (
     <div className="checkbox">
@@ -9,6 +11,12 @@ const CheckBox = ({ value }) => {
             e.target.parentElement.style.textDecoration = e.target.checked
               ? "line-through"
               : "";
+
+            if (e.target.checked === true) {
+              logEvent(getAnalytics(), "checkbox", {
+                item: value,
+              });
+            }
           }}
         />
         {value}
