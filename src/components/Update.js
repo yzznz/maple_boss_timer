@@ -23,6 +23,7 @@ const Update = () => {
     <div className="update">
       <header>★업데이트 내역</header>
       <article>
+        <Notice date="2022-08-04" desc="오타수정, 제보 감사합니다." />
         <Notice
           date="2022-07-31"
           desc="진힐라 하드모드 3페이즈 패턴시간 변경 (101초 -> 102초)"
