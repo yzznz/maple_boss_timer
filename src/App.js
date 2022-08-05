@@ -5,6 +5,7 @@ import Lucid from "./components/boss/Lucid";
 import VerusHilla from "./components/boss/VerusHilla";
 import Update from "./components/Update";
 import DopingCheckList from "./components/DopingCheckList";
+import DropItem from "./components/DropItem";
 
 import work from "./images/work.jpg";
 
@@ -21,6 +22,7 @@ function App() {
   }, []);
   const [bossTimer, setBossTimer] = useState();
   const [rightBox, setRightBox] = useState();
+  const [rightBoxSelector, setRightBoxSelector] = useState();
   const ImgArray = [
     work,
     "https://ssl.nexon.com/s2/game/maplestory/renewal/common/media/artwork/artwork_05.jpg",
@@ -28,6 +30,12 @@ function App() {
     "https://lwi.nexon.com/maplestory/common/media/artwork/artwork_114.jpg",
   ];
   const [imgNumber, setImgNumber] = useState(3);
+
+  // 오른쪽 메뉴 선택자
+  useEffect(() => {
+    if (rightBox === undefined) setRightBoxSelector();
+    if (rightBox !== undefined) setRightBoxSelector(rightBox.type.name);
+  }, [rightBox]);
 
   return (
     <div
@@ -47,16 +55,29 @@ function App() {
             // setRightBox(
             //   rightBox === undefined ? <DopingCheckList /> : undefined
             // );
-            if (rightBox === undefined) {
+            if (rightBoxSelector !== "DopingCheckList") {
               setRightBox(<DopingCheckList />);
+              setRightBoxSelector("DopingCheckList");
               logEvent(getAnalytics(), "도핑체크리스트", {
                 click: "open",
               });
             } else {
-              setRightBox(undefined);
+              setRightBox();
               logEvent(getAnalytics(), "도핑체크리스트", {
                 click: "close",
               });
+            }
+          }}
+        />
+        <input
+          type="button"
+          value="분배아이템"
+          onClick={() => {
+            if (rightBoxSelector !== "DropItem") {
+              setRightBox(<DropItem />);
+              setRightBoxSelector("DropItem");
+            } else {
+              setRightBox();
             }
           }}
         />

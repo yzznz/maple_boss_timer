@@ -35,6 +35,14 @@
   }
 }
 
+/* .item {
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+} */
+
 body {
   margin: auto;
   background-color: #eeeeee;
@@ -61,7 +69,7 @@ body {
   margin-bottom: 20px;
 }
 
-.menu input {
+input {
   margin: 4px;
 }
 
