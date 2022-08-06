@@ -21,8 +21,8 @@ function App() {
     });
   }, []);
   const [bossTimer, setBossTimer] = useState();
-  const [rightBox, setRightBox] = useState();
-  const [rightBoxSelector, setRightBoxSelector] = useState();
+  const [leftBox, setLeftBox] = useState();
+  const [leftBoxSelector, setLeftBoxSelector] = useState();
   const ImgArray = [
     work,
     "https://ssl.nexon.com/s2/game/maplestory/renewal/common/media/artwork/artwork_05.jpg",
@@ -33,9 +33,14 @@ function App() {
 
   // 오른쪽 메뉴 선택자
   useEffect(() => {
-    if (rightBox === undefined) setRightBoxSelector();
-    if (rightBox !== undefined) setRightBoxSelector(rightBox.type.name);
-  }, [rightBox]);
+    if (leftBox === undefined) setLeftBoxSelector();
+    if (leftBox !== undefined) {
+      setLeftBoxSelector(leftBox.type.name);
+      logEvent(getAnalytics(), leftBox.type.name, {
+        click: "open",
+      });
+    }
+  }, [leftBox]);
 
   return (
     <div
@@ -52,20 +57,14 @@ function App() {
           type="button"
           value="도핑 체크리스트"
           onClick={() => {
-            // setRightBox(
-            //   rightBox === undefined ? <DopingCheckList /> : undefined
+            // setLeftBox(
+            //   leftBox === undefined ? <DopingCheckList /> : undefined
             // );
-            if (rightBoxSelector !== "DopingCheckList") {
-              setRightBox(<DopingCheckList />);
-              setRightBoxSelector("DopingCheckList");
-              logEvent(getAnalytics(), "도핑체크리스트", {
-                click: "open",
-              });
+            if (leftBoxSelector !== "DopingCheckList") {
+              setLeftBox(<DopingCheckList />);
+              setLeftBoxSelector("DopingCheckList");
             } else {
-              setRightBox();
-              logEvent(getAnalytics(), "도핑체크리스트", {
-                click: "close",
-              });
+              setLeftBox();
             }
           }}
         />
@@ -73,15 +72,15 @@ function App() {
           type="button"
           value="분배아이템"
           onClick={() => {
-            if (rightBoxSelector !== "DropItem") {
-              setRightBox(<DropItem />);
-              setRightBoxSelector("DropItem");
+            if (leftBoxSelector !== "DropItem") {
+              setLeftBox(<DropItem />);
+              setLeftBoxSelector("DropItem");
             } else {
-              setRightBox();
+              setLeftBox();
             }
           }}
         />
-        <div>{rightBox}</div>
+        <div>{leftBox}</div>
       </div>
       <div className="app">
         <div className="menu">
