@@ -1,6 +1,6 @@
 import CheckBox from "./CheckBox";
 
-const DopingCheckList = () => {
+export default function DopingCheckList() {
   const CheckBeforeDopingArr = [
     "링크",
     "유니온",
@@ -58,5 +58,4 @@ const DopingCheckList = () => {
       </div>
     </div>
   );
-};
-export default DopingCheckList;
+}

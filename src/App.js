@@ -31,16 +31,15 @@ function App() {
   ];
   const [imgNumber, setImgNumber] = useState(3);
 
-  // 오른쪽 메뉴 선택자
+  // 왼쪽 메뉴 선택자
   useEffect(() => {
     if (leftBox === undefined) setLeftBoxSelector();
     if (leftBox !== undefined) {
-      setLeftBoxSelector(leftBox.type.name);
-      logEvent(getAnalytics(), leftBox.type.name, {
+      logEvent(getAnalytics(), leftBoxSelector, {
         click: "open",
       });
     }
-  }, [leftBox]);
+  }, [leftBox, leftBoxSelector]);
 
   return (
     <div
@@ -65,6 +64,7 @@ function App() {
               setLeftBoxSelector("DopingCheckList");
             } else {
               setLeftBox();
+              setLeftBoxSelector();
             }
           }}
         />
@@ -77,6 +77,7 @@ function App() {
               setLeftBoxSelector("DropItem");
             } else {
               setLeftBox();
+              setLeftBoxSelector();
             }
           }}
         />
