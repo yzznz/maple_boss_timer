@@ -29,6 +29,7 @@ const Timetable = {
   },
 };
 
+// useEffect로 처리중인 것들 useReducer로 바꾸기
 const VerusHilla = () => {
   const [phaseSelector, setPhaseSelector] = useState({
     difficulty: "hard",
@@ -322,6 +323,16 @@ const VerusHilla = () => {
             <>3페이즈 : 체력 31% 미만</>
           )}
         </h4>
+      </div>
+      <div className="youtubelink">
+        <a
+          href="https://www.youtube.com/watch?v=-F4KFw3Ec3U"
+          target="_blank"
+          rel="noreferrer"
+          title="Youtube Link"
+        >
+          테스트영상
+        </a>
       </div>
     </div>
   );
